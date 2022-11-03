@@ -86,4 +86,14 @@ public class AddCheckUser {
         }
 
     }
+
+    public void setAdminStatus(String userdb, String passworddb, int status, String user) throws ClassNotFoundException, SQLException {
+        Class.forName("com.mysql.cj.jdbc.Driver");
+        Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/survey",
+                userdb, passworddb);
+        PreparedStatement pstm = con.prepareStatement("UPDATE users SET is_admin =? WHERE mail = ?");
+        pstm.setInt(1, status);
+        pstm.setString(2, user);
+        pstm.executeUpdate();
+    }
 }
