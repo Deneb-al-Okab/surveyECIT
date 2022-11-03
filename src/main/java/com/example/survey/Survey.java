@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 public class Survey {
+    // Due constructor separati con o senza le questions
     private int id;
     private String mail;
     private String category;
@@ -35,4 +36,5 @@ public class Survey {
         this.publishDate = publishDate;
         this.endingDate = endingDate;
     }
+
 }
