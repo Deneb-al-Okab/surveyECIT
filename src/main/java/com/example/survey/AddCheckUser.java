@@ -1,0 +1,75 @@
+package com.example.survey;
+
+import java.sql.*;
+
+public class AddCheckUser {
+
+
+    /* legenda errorCode:
+            0 = wrong password;
+            1 = wrong user;
+            2 = admin user;
+            3 = normal user;
+     */
+    public int check(String userdb, String passworddb, String user, String password) throws ClassNotFoundException, SQLException {
+        int errorCode;
+        Class.forName("com.mysql.cj.jdbc.Driver");
+        Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/survey",
+                userdb, passworddb);
+        PreparedStatement pstm = con.prepareStatement("SELECT * FROM users WHERE mail = ?");
+        pstm.setString(1, user);
+        ResultSet rs = pstm.executeQuery();
+        if (!rs.isBeforeFirst()) {
+            errorCode = 1;
+            con.close();
+            pstm.close();
+            return errorCode;
+        }
+
+        String psw = "";
+        int adm = 0;
+        while(rs.next()){
+            psw = rs.getString(2);
+            adm = rs.getInt(3);
+        }
+
+        if (psw.equals(password)) {
+            if (adm == 1) {
+                con.close();
+                pstm.close();
+                errorCode = 2;
+                return errorCode;
+            } else {
+                con.close();
+                pstm.close();
+                errorCode = 3;
+                return errorCode;
+            }
+        }
+        else {
+            con.close();
+            pstm.close();
+            errorCode = 0;
+            return errorCode;
+        }
+    }
+
+    public int addUser(String userdb, String passworddb, String user, String password, String admin) throws ClassNotFoundException, SQLException {
+        int errorCode;
+        Class.forName("com.mysql.cj.jdbc.Driver");
+        Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/survey",
+                userdb, passworddb);
+        PreparedStatement pstm = con.prepareStatement("SELECT * FROM users WHERE mail = ?");
+        pstm.setString(1, user);
+        ResultSet rs = pstm.executeQuery();
+        if (rs.isBeforeFirst()) {
+            errorCode = 1;
+
+            con.close();
+            pstm.close();
+            return errorCode;
+        }
+        // insert
+
+    }
+}
