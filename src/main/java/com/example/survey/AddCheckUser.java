@@ -54,6 +54,10 @@ public class AddCheckUser {
         }
     }
 
+    /*legenda errorCode:
+            0 = utente inserito;
+            1 = utente già esistente;
+     */
     public int addUser(String userdb, String passworddb, String user, String password, String admin) throws ClassNotFoundException, SQLException {
         int errorCode;
         Class.forName("com.mysql.cj.jdbc.Driver");
@@ -64,12 +68,21 @@ public class AddCheckUser {
         ResultSet rs = pstm.executeQuery();
         if (rs.isBeforeFirst()) {
             errorCode = 1;
-
             con.close();
             pstm.close();
             return errorCode;
         }
-        // insert
+        else{
+            PreparedStatement stm = con.prepareStatement("INSERT INTO users VALUES (?,?,?);");
+            stm.setString(1,user);
+            stm.setString(2,password);
+            stm.setInt(3, Integer.parseInt(admin));
+            stm.executeUpdate();
+            con.close();
+            stm.close();
+            errorCode = 0;
+            return errorCode;
+        }
 
     }
 }
