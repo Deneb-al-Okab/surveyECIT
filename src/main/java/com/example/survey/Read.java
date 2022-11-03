@@ -9,39 +9,57 @@ public class Read {
         Class.forName("com.mysql.cj.jdbc.Driver");
         Connection con = DriverManager.getConnection("" +
                 "jdbc:mysql://localhost/survey", usr, pwd);
-      /*  PreparedStatement stmt = con.prepareStatement("select question.question, question.id" +
-                "from  survey_table , survey_composition , question_answer , question, answer" +
-                "where survey_table.id = survey_composition.id_survey and" +
-                "survey_composition.id_question_answer = question_answer.id and" +
-                "question_answer.id_answer = question.id" +
-                "and survey_table.id = ?");*/
-        // Prende tutte domande ripetendo nome
-        PreparedStatement stmt = con.prepareStatement("select question.question, answer.answer, question.id " +
+        //CONTO IL NUMERO DI RIGHE
+        int count = 0;
+        PreparedStatement stmtC = con.prepareStatement("select count(question.id) as count " +
                 "from  survey_table , survey_composition , question_answer " +
                 "inner JOIN answer ON question_answer.id_answer = answer.id " +
                 "inner join question on question_answer.id_question = question.id " +
                 "where survey_table.id = survey_composition.id_survey and " +
                 "survey_composition.id_question_answer = question_answer.id and " +
                 "survey_table.id = ? ;");
+        stmtC.setInt(1,idSurvey);
+        ResultSet rsC = stmtC.executeQuery();
+        while (rsC.next()){
+             count = rsC.getInt(1);
+        }
+        stmtC.close();
+        //PRENDO TUTTE LE DOMANDE E RISPOSTE
+        PreparedStatement stmt = con.prepareStatement("select question.question, answer.answer, question.id " +
+                "from  survey_table , survey_composition , question_answer " +
+                "inner JOIN answer ON question_answer.id_answer = answer.id " +
+                "inner join question on question_answer.id_question = question.id " +
+                "where survey_table.id = survey_composition.id_survey and " +
+                "survey_composition.id_question_answer = question_answer.id and " +
+                "survey_table.id = ? " +
+                "ORDER BY question.id asc; ");
         stmt.setInt(1,idSurvey);
         ResultSet rs = stmt.executeQuery();
-        Question tempQuestion;
+        ArrayList<String> tempAnswers = new ArrayList<>();
+        Question tempQuestion ;
         String textQuestion = "";
         String textAnswer;
-        ArrayList<String> tempAnswers = new ArrayList<>();
         int idQuestion = 0;
         int idNext = 0;
+        int loop = 1;
         while (rs.next()) {
              idNext= rs.getInt("id");
-             textAnswer = rs.getString("answer");
-             if (idNext != idQuestion){
+
+             if(idNext != idQuestion && idQuestion != 0 || loop == count){
+                 if(loop == count){
+                     textAnswer = rs.getString("answer");
+                     tempAnswers.add(textAnswer);
+                 }
                  tempQuestion = new Question(idQuestion,textQuestion,tempAnswers);
                  questions.add(tempQuestion);
-                 tempAnswers.clear();
+                 tempAnswers = new ArrayList<>();
              }
+            textAnswer = rs.getString("answer");
             tempAnswers.add(textAnswer);
-             idQuestion = idNext;
             textQuestion = rs.getString("question");
+            idQuestion = idNext;
+            loop ++;
+
         }
         con.close();
         stmt.close();

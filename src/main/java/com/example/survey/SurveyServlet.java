@@ -24,7 +24,6 @@ public class SurveyServlet extends HttpServlet {
         }
         Gson gson = new Gson();
         String json = gson.toJson(mysurv);
-        System.out.println("Jason = " +json);
         PrintWriter out = response.getWriter();
         out.print(json);
     }
