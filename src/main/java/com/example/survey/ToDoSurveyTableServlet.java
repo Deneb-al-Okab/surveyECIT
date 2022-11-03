@@ -14,18 +14,13 @@ import java.util.ArrayList;
 public class ToDoSurveyTableServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         int step = Integer.parseInt(request.getParameter("step"));
         int currentPage = Integer.parseInt(request.getParameter("currentpage"));
-        String username = getInitParameter("username");
+        String username = request.getParameter("username");
         Read r = new Read();
         ArrayList<Survey> arrSurvey = null;
         try {
-            arrSurvey = r.readSurveyToDo("root","123456",currentPage,step,username);
+            arrSurvey = r.readSurveyToDo("root","12GaBGaL17!",currentPage,step,username);
         } catch (ClassNotFoundException | SQLException e) {
             throw new RuntimeException(e);
         }
@@ -34,6 +29,11 @@ public class ToDoSurveyTableServlet extends HttpServlet {
 
         PrintWriter out = response.getWriter();
         out.print(json);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
 
     }
 }

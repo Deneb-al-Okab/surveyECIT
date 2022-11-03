@@ -15,11 +15,11 @@ public class DoneSurveyTableServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         int step = Integer.parseInt(request.getParameter("step"));
         int currentPage = Integer.parseInt(request.getParameter("currentpage"));
-        String username = getInitParameter("username");
+        String username = request.getParameter("username");
         Read r = new Read();
         ArrayList<Survey> arrSurvey = null;
         try {
-            arrSurvey = r.readSurveyDone("root","123456",currentPage,step,username);
+            arrSurvey = r.readSurveyDone("root","12GaBGaL17!",currentPage,step,username);
         } catch (ClassNotFoundException | SQLException e) {
             throw new RuntimeException(e);
         }

@@ -71,12 +71,15 @@ public class Read {
         Calendar calendar1 = Calendar.getInstance();
         Calendar calendar2 = Calendar.getInstance();
         while (rs.next()) {
+            System.out.println("passo di qua");
             calendar1.setTime(rs.getDate(6));
             calendar2.setTime(rs.getDate(7));
-            surveysDone.add(new Survey(rs.getInt(1), rs.getString(2), rs.getString(8),
+            surveysDone.add(new Survey(rs.getInt(1), rs.getString(2), rs.getString(3),
                     rs.getString(4), rs.getString(5), calendar1,
                     calendar2));
         }
+        con.close();
+        stm.close();
         return surveysDone;
     }
 
@@ -84,30 +87,35 @@ public class Read {
         Class.forName("com.mysql.cj.jdbc.Driver");
         Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/survey",
                 utentedb, passworddb);
-        String query = "select survey_table.id, survey_table.id_mail, category.name, survey_table.name, survey_table.description, survey_table.publish_date, survey_table.ending_date from survey_table from survey_table " +
+        String queryToDo = "select survey_table.id, survey_table.id_mail, category.name, survey_table.name, survey_table.description, survey_table.publish_date, survey_table.ending_date " +
+                "from survey_table " +
                 "right join category on category.id = survey_table.id_category " +
-                "where survey_table.id not in " +
+                "where survey_table.id not in (" +
                 "SELECT survey_table.id " +
                 "FROM submitted_survey " +
                 "left join survey_table on submitted_survey.id_survey = survey_table.id " +
                 "where submitted_survey.id_mail = ?) " +
                 "limit ?,?;";
-        PreparedStatement stm = con.prepareStatement(query);
-        stm.setString(1, user);
-        stm.setInt(2, start);
-        stm.setInt(3, step);
-        ResultSet rs = stm.executeQuery();
+        PreparedStatement pstm = con.prepareStatement(queryToDo);
+        pstm.setString(1, user);
+        pstm.setInt(2, start);
+        pstm.setInt(3, step);
+        ResultSet rst = pstm.executeQuery();
+        System.out.println(pstm);
 
         ArrayList<Survey> surveysToDo = new ArrayList<Survey>();
         Calendar calendar1 = Calendar.getInstance();
         Calendar calendar2 = Calendar.getInstance();
-        while (rs.next()) {
-            calendar1.setTime(rs.getDate(6));
-            calendar2.setTime(rs.getDate(7));
-            surveysToDo.add(new Survey(rs.getInt(1), rs.getString(2), rs.getString(8),
-                    rs.getString(4), rs.getString(5), calendar1,
+
+        while (rst.next()) {
+            calendar1.setTime(rst.getDate(6));
+            calendar2.setTime(rst.getDate(7));
+            surveysToDo.add(new Survey(rst.getInt(1), rst.getString(2), rst.getString(3),
+                    rst.getString(4), rst.getString(5), calendar1,
                     calendar2));
         }
+        con.close();
+        pstm.close();
         return surveysToDo;
     }
 }
