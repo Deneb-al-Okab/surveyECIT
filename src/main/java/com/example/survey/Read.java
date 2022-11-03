@@ -2,6 +2,7 @@ package com.example.survey;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class Read {
     public ArrayList<Question> readQuestions(String usr, String pwd, int idSurvey) throws SQLException, ClassNotFoundException {
@@ -66,5 +67,65 @@ public class Read {
 
 
         return questions;
+    }
+
+    public ArrayList<Survey> readSurveyDone(String utentedb, String passworddb, int start, int step, String user) throws ClassNotFoundException, SQLException {
+        Class.forName("com.mysql.cj.jdbc.Driver");
+        Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/survey",
+                utentedb, passworddb);
+        String query = "SELECT survey_table.id, survey_table.id_mail, category.name, survey_table.name, survey_table.description, survey_table.publish_date, survey_table.ending_date " +
+                "FROM survey_table " +
+                "left join submitted_survey on submitted_survey.id_survey = survey_table.id " +
+                "left join category on category.id = survey_table.id_category " +
+                "WHERE submitted_survey.id_mail = ? " +
+                "limit ?,?;";
+        PreparedStatement stm = con.prepareStatement(query);
+        stm.setString(1, user);
+        stm.setInt(2, start);
+        stm.setInt(3, step);
+        ResultSet rs = stm.executeQuery();
+
+        ArrayList<Survey> surveysDone = new ArrayList<Survey>();
+        Calendar calendar1 = Calendar.getInstance();
+        Calendar calendar2 = Calendar.getInstance();
+        while (rs.next()) {
+            calendar1.setTime(rs.getDate(6));
+            calendar2.setTime(rs.getDate(7));
+            surveysDone.add(new Survey(rs.getInt(1), rs.getString(2), rs.getString(8),
+                    rs.getString(4), rs.getString(5), calendar1,
+                    calendar2));
+        }
+        return surveysDone;
+    }
+
+    public ArrayList<Survey> readSurveyToDo(String utentedb, String passworddb, int start, int step, String user) throws ClassNotFoundException, SQLException {
+        Class.forName("com.mysql.cj.jdbc.Driver");
+        Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/survey",
+                utentedb, passworddb);
+        String query = "select survey_table.id, survey_table.id_mail, category.name, survey_table.name, survey_table.description, survey_table.publish_date, survey_table.ending_date from survey_table from survey_table " +
+                "right join category on category.id = survey_table.id_category " +
+                "where survey_table.id not in " +
+                "SELECT survey_table.id " +
+                "FROM submitted_survey " +
+                "left join survey_table on submitted_survey.id_survey = survey_table.id " +
+                "where submitted_survey.id_mail = ?) " +
+                "limit ?,?;";
+        PreparedStatement stm = con.prepareStatement(query);
+        stm.setString(1, user);
+        stm.setInt(2, start);
+        stm.setInt(3, step);
+        ResultSet rs = stm.executeQuery();
+
+        ArrayList<Survey> surveysToDo = new ArrayList<Survey>();
+        Calendar calendar1 = Calendar.getInstance();
+        Calendar calendar2 = Calendar.getInstance();
+        while (rs.next()) {
+            calendar1.setTime(rs.getDate(6));
+            calendar2.setTime(rs.getDate(7));
+            surveysToDo.add(new Survey(rs.getInt(1), rs.getString(2), rs.getString(8),
+                    rs.getString(4), rs.getString(5), calendar1,
+                    calendar2));
+        }
+        return surveysToDo;
     }
 }

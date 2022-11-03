@@ -12,11 +12,11 @@ public class Survey {
     private String category;
     private String name;
     private String description;
-    private LocalDateTime publishDate;
-    private LocalDateTime endingDate;
+    private Calendar publishDate;
+    private Calendar endingDate;
     private ArrayList<Question> questions = new ArrayList<Question>();
 
-    public Survey(int id, String mail, String category, String name, String description, LocalDateTime publishDate, LocalDateTime endingDate, ArrayList<Question> questions) {
+    public Survey(int id, String mail, String category, String name, String description, Calendar publishDate, Calendar endingDate, ArrayList<Question> questions) {
         this.id = id;
         this.mail = mail;
         this.category = category;
@@ -27,7 +27,7 @@ public class Survey {
         this.questions = questions;
     }
 
-    public Survey(int id, String mail, String category, String name, String description, LocalDateTime publishDate, LocalDateTime endingDate) {
+    public Survey(int id, String mail, String category, String name, String description, Calendar publishDate, Calendar endingDate) {
         this.id = id;
         this.mail = mail;
         this.category = category;
