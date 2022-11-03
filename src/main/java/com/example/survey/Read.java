@@ -89,7 +89,6 @@ public class Read {
         Calendar calendar1 = Calendar.getInstance();
         Calendar calendar2 = Calendar.getInstance();
         while (rs.next()) {
-            System.out.println("passo di qua");
             calendar1.setTime(rs.getDate(6));
             calendar2.setTime(rs.getDate(7));
             surveysDone.add(new Survey(rs.getInt(1), rs.getString(2), rs.getString(3),
@@ -100,6 +99,30 @@ public class Read {
         stm.close();
         return surveysDone;
     }
+
+    public int countSurveyDone(String utentedb, String passworddb, String user) throws ClassNotFoundException, SQLException {
+        Class.forName("com.mysql.cj.jdbc.Driver");
+        Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/survey",
+                utentedb, passworddb);
+        String query = "SELECT count(survey_table.id) " +
+                "FROM survey_table " +
+                "left join submitted_survey on submitted_survey.id_survey = survey_table.id " +
+                "left join category on category.id = survey_table.id_category " +
+                "WHERE submitted_survey.id_mail = ?";
+        PreparedStatement stm = con.prepareStatement(query);
+        stm.setString(1, user);
+        ResultSet rs = stm.executeQuery();
+
+        int count = 0;
+        while (rs.next()) {
+            count = rs.getInt(1);
+        }
+        con.close();
+        stm.close();
+        return count;
+    }
+
+
 
     public ArrayList<Survey> readSurveyToDo(String utentedb, String passworddb, int start, int step, String user) throws ClassNotFoundException, SQLException {
         Class.forName("com.mysql.cj.jdbc.Driver");
@@ -135,5 +158,30 @@ public class Read {
         con.close();
         pstm.close();
         return surveysToDo;
+    }
+
+    public int countSurveyToDo(String utentedb, String passworddb, String user) throws ClassNotFoundException, SQLException {
+        Class.forName("com.mysql.cj.jdbc.Driver");
+        Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/survey",
+                utentedb, passworddb);
+        String query = "select count(survey_table.id) " +
+                "from survey_table " +
+                "right join category on category.id = survey_table.id_category " +
+                "where survey_table.id not in (" +
+                "SELECT survey_table.id " +
+                "FROM submitted_survey " +
+                "left join survey_table on submitted_survey.id_survey = survey_table.id " +
+                "where submitted_survey.id_mail = ?) ";
+        PreparedStatement stm = con.prepareStatement(query);
+        stm.setString(1, user);
+        ResultSet rs = stm.executeQuery();
+
+        int count = 0;
+        while (rs.next()) {
+            count = rs.getInt(1);
+        }
+        con.close();
+        stm.close();
+        return count;
     }
 }

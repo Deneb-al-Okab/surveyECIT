@@ -18,13 +18,16 @@ public class DoneSurveyTableServlet extends HttpServlet {
         String username = request.getParameter("username");
         Read r = new Read();
         ArrayList<Survey> arrSurvey = null;
+        int counter;
         try {
             arrSurvey = r.readSurveyDone("root","12GaBGaL17!",currentPage,step,username);
+            counter = r.countSurveyDone("root","12GaBGaL17!", username);
         } catch (ClassNotFoundException | SQLException e) {
             throw new RuntimeException(e);
         }
+        SurveyList slist = new SurveyList(arrSurvey, counter);
         Gson gson = new Gson();
-        String json = gson.toJson(arrSurvey);
+        String json = gson.toJson(slist);
 
         PrintWriter out = response.getWriter();
         out.print(json);
