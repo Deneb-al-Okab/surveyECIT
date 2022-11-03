@@ -80,6 +80,7 @@ public class AddCheckUser {
             stm.executeUpdate();
             con.close();
             stm.close();
+
             errorCode = 0;
             return errorCode;
         }
