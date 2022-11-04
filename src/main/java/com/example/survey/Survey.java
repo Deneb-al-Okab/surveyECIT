@@ -17,7 +17,6 @@ public class Survey {
     private String description;
     private Calendar publishDate;
     private Calendar endingDate;
-
     private String publishDateS;
     private String endingDateS;
     private ArrayList<Question> questions = new ArrayList<Question>();

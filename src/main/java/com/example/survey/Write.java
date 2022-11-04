@@ -59,7 +59,7 @@ public class Write {
     //String[] surveyParameters = {"user", "category", "name", "description"};
     //Calendar[] dates = {publish_date, ending_date};
     //String[][] question = {text1[], text2[],...}
-    public void createSurvey(String[] surveyParams, Calendar[] dates, String[][] questions ){
+    public void createSurvey(Survey sur,){
 
     }
 }
