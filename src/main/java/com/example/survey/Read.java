@@ -5,11 +5,14 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 public class Read {
-    public ArrayList<Question> readQuestions(String usr, String pwd, int idSurvey) throws SQLException, ClassNotFoundException {
+
+    final String url = "jdbc:mysql://localhost:3306/survey";
+    final String userdb = "surveyEcit";
+    final String psw = "123456";
+    public ArrayList<Question> readQuestions(int idSurvey) throws SQLException, ClassNotFoundException {
         ArrayList<Question> questions = new ArrayList<>();
         Class.forName("com.mysql.cj.jdbc.Driver");
-        Connection con = DriverManager.getConnection("" +
-                "jdbc:mysql://localhost/survey", usr, pwd);
+        Connection con = DriverManager.getConnection(this.url, this.userdb, this.psw);
         //CONTO IL NUMERO DI RIGHE
         int count = 0;
         PreparedStatement stmtC = con.prepareStatement("select count(question.id) as count " +
@@ -69,10 +72,9 @@ public class Read {
         return questions;
     }
 
-    public ArrayList<Survey> readSurveyDone(String utentedb, String passworddb, int start, int step, String user) throws ClassNotFoundException, SQLException {
+    public ArrayList<Survey> readSurveyDone(int start, int step, String user) throws ClassNotFoundException, SQLException {
         Class.forName("com.mysql.cj.jdbc.Driver");
-        Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/survey",
-                utentedb, passworddb);
+        Connection con = DriverManager.getConnection(this.url, this.userdb, this.psw);
         String query = "SELECT survey_table.id, survey_table.id_mail, category.name, survey_table.name, survey_table.description, survey_table.publish_date, survey_table.ending_date " +
                 "FROM survey_table " +
                 "left join submitted_survey on submitted_survey.id_survey = survey_table.id " +
@@ -100,10 +102,9 @@ public class Read {
         return surveysDone;
     }
 
-    public int countSurveyDone(String utentedb, String passworddb, String user) throws ClassNotFoundException, SQLException {
+    public int countSurveyDone(String user) throws ClassNotFoundException, SQLException {
         Class.forName("com.mysql.cj.jdbc.Driver");
-        Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/survey",
-                utentedb, passworddb);
+        Connection con = DriverManager.getConnection(this.url, this.userdb, this.psw);
         String query = "SELECT count(survey_table.id) " +
                 "FROM survey_table " +
                 "left join submitted_survey on submitted_survey.id_survey = survey_table.id " +
@@ -124,10 +125,9 @@ public class Read {
 
 
 
-    public ArrayList<Survey> readSurveyToDo(String utentedb, String passworddb, int start, int step, String user) throws ClassNotFoundException, SQLException {
+    public ArrayList<Survey> readSurveyToDo(int start, int step, String user) throws ClassNotFoundException, SQLException {
         Class.forName("com.mysql.cj.jdbc.Driver");
-        Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/survey",
-                utentedb, passworddb);
+        Connection con = DriverManager.getConnection(this.url, this.userdb, this.psw);
         String queryToDo = "select survey_table.id, survey_table.id_mail, category.name, survey_table.name, survey_table.description, survey_table.publish_date, survey_table.ending_date " +
                 "from survey_table " +
                 "right join category on category.id = survey_table.id_category " +
@@ -160,10 +160,9 @@ public class Read {
         return surveysToDo;
     }
 
-    public int countSurveyToDo(String utentedb, String passworddb, String user) throws ClassNotFoundException, SQLException {
+    public int countSurveyToDo(String user) throws ClassNotFoundException, SQLException {
         Class.forName("com.mysql.cj.jdbc.Driver");
-        Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/survey",
-                utentedb, passworddb);
+        Connection con = DriverManager.getConnection(this.url, this.userdb, this.psw);
         String query = "select count(survey_table.id) " +
                 "from survey_table " +
                 "right join category on category.id = survey_table.id_category " +

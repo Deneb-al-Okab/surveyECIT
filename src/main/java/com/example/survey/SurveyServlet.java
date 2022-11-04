@@ -18,7 +18,7 @@ public class SurveyServlet extends HttpServlet {
         ArrayList<Question> mysurv = new ArrayList<>();
         try {
             Read rd = new Read();
-             mysurv = rd.readQuestions("root","Karate980",idTable);
+             mysurv = rd.readQuestions(idTable);
         } catch (ClassNotFoundException | SQLException e) {
             throw new RuntimeException(e);
         }

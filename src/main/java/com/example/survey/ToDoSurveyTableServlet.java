@@ -21,8 +21,8 @@ public class ToDoSurveyTableServlet extends HttpServlet {
         ArrayList<Survey> arrSurvey = null;
         int counter=0;
         try {
-            arrSurvey = r.readSurveyToDo("root","12GaBGaL17!",currentPage,step,username);
-            counter = r.countSurveyToDo("root","12GaBGaL17!",username);
+            arrSurvey = r.readSurveyToDo(currentPage,step,username);
+            counter = r.countSurveyToDo(username);
         } catch (ClassNotFoundException | SQLException e) {
             throw new RuntimeException(e);
         }

@@ -20,8 +20,8 @@ public class DoneSurveyTableServlet extends HttpServlet {
         ArrayList<Survey> arrSurvey = null;
         int counter;
         try {
-            arrSurvey = r.readSurveyDone("root","12GaBGaL17!",currentPage,step,username);
-            counter = r.countSurveyDone("root","12GaBGaL17!", username);
+            arrSurvey = r.readSurveyDone(currentPage,step,username);
+            counter = r.countSurveyDone(username);
         } catch (ClassNotFoundException | SQLException e) {
             throw new RuntimeException(e);
         }
