@@ -8,7 +8,7 @@ public class Write {
     final String userdb = "surveyEcit";
     final String psw = "123456";
 
-    public int writeAnswers(String user, int surveyId, int[] questAnsw) throws ClassNotFoundException, SQLException {
+    /*public int writeAnswers(String user, int surveyId, int[] questAnsw) throws ClassNotFoundException, SQLException {
         Class.forName("com.mysql.cj.jdbc.Driver");
 
         Connection con = DriverManager.getConnection(this.url, this.userdb, this.psw);
@@ -19,5 +19,5 @@ public class Write {
         stm.setInt(1, surveyId);
         ResultSet rs = stm.executeQuery();
 
-    }
+    }*/
 }
