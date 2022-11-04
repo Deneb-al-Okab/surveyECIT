@@ -9,11 +9,12 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Reader;
+import java.sql.SQLException;
 
 @WebServlet(name = "GetAnswersServlet", value = "/GetAnswersServlet")
 public class GetAnswersServlet extends HttpServlet {
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         // Read from request
         Gson gson = new Gson();
@@ -23,11 +24,15 @@ public class GetAnswersServlet extends HttpServlet {
         GetAnswerClass obj = gson.fromJson(reader, GetAnswerClass.class);
         //System.out.println(obj.getId_questionanswer());
         Write wr = new Write();
-        wr.writeAnswers(obj.getUsername(),obj.getId_survey(),obj.getId_questionanswer());
+        try {
+            wr.writeAnswers(obj.getUsername(),obj.getId_survey(),obj.getId_questionanswer());
+        } catch (ClassNotFoundException | SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
     }
 }
