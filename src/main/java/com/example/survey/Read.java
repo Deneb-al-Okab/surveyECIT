@@ -5,11 +5,14 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 public class Read {
-    public ArrayList<Question> readQuestions(String usr, String pwd, int idSurvey) throws SQLException, ClassNotFoundException {
+
+    final String url = "jdbc:mysql://localhost:3306/survey";
+    final String userdb = "surveyEcit";
+    final String psw = "123456";
+    public ArrayList<Question> readQuestions(int idSurvey) throws SQLException, ClassNotFoundException {
         ArrayList<Question> questions = new ArrayList<>();
         Class.forName("com.mysql.cj.jdbc.Driver");
-        Connection con = DriverManager.getConnection("" +
-                "jdbc:mysql://localhost/survey", usr, pwd);
+        Connection con = DriverManager.getConnection(this.url, this.userdb, this.psw);
         //CONTO IL NUMERO DI RIGHE
         int count = 0;
         PreparedStatement stmtC = con.prepareStatement("select count(question.id) as count " +
@@ -73,10 +76,9 @@ public class Read {
         return questions;
     }
 
-    public ArrayList<Survey> readSurveyDone(String utentedb, String passworddb, int start, int step, String user) throws ClassNotFoundException, SQLException {
+    public ArrayList<Survey> readSurveyDone(int start, int step, String user) throws ClassNotFoundException, SQLException {
         Class.forName("com.mysql.cj.jdbc.Driver");
-        Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/survey",
-                utentedb, passworddb);
+        Connection con = DriverManager.getConnection(this.url, this.userdb, this.psw);
         String query = "SELECT survey_table.id, survey_table.id_mail, category.name, survey_table.name, survey_table.description, survey_table.publish_date, survey_table.ending_date " +
                 "FROM survey_table " +
                 "left join submitted_survey on submitted_survey.id_survey = survey_table.id " +
@@ -93,7 +95,6 @@ public class Read {
         Calendar calendar1 = Calendar.getInstance();
         Calendar calendar2 = Calendar.getInstance();
         while (rs.next()) {
-            System.out.println("passo di qua");
             calendar1.setTime(rs.getDate(6));
             calendar2.setTime(rs.getDate(7));
             surveysDone.add(new Survey(rs.getInt(1), rs.getString(2), rs.getString(3),
@@ -105,10 +106,32 @@ public class Read {
         return surveysDone;
     }
 
-    public ArrayList<Survey> readSurveyToDo(String utentedb, String passworddb, int start, int step, String user) throws ClassNotFoundException, SQLException {
+    public int countSurveyDone(String user) throws ClassNotFoundException, SQLException {
         Class.forName("com.mysql.cj.jdbc.Driver");
-        Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/survey",
-                utentedb, passworddb);
+        Connection con = DriverManager.getConnection(this.url, this.userdb, this.psw);
+        String query = "SELECT count(survey_table.id) " +
+                "FROM survey_table " +
+                "left join submitted_survey on submitted_survey.id_survey = survey_table.id " +
+                "left join category on category.id = survey_table.id_category " +
+                "WHERE submitted_survey.id_mail = ?";
+        PreparedStatement stm = con.prepareStatement(query);
+        stm.setString(1, user);
+        ResultSet rs = stm.executeQuery();
+
+        int count = 0;
+        while (rs.next()) {
+            count = rs.getInt(1);
+        }
+        con.close();
+        stm.close();
+        return count;
+    }
+
+
+
+    public ArrayList<Survey> readSurveyToDo(int start, int step, String user) throws ClassNotFoundException, SQLException {
+        Class.forName("com.mysql.cj.jdbc.Driver");
+        Connection con = DriverManager.getConnection(this.url, this.userdb, this.psw);
         String queryToDo = "select survey_table.id, survey_table.id_mail, category.name, survey_table.name, survey_table.description, survey_table.publish_date, survey_table.ending_date " +
                 "from survey_table " +
                 "right join category on category.id = survey_table.id_category " +
@@ -139,5 +162,29 @@ public class Read {
         con.close();
         pstm.close();
         return surveysToDo;
+    }
+
+    public int countSurveyToDo(String user) throws ClassNotFoundException, SQLException {
+        Class.forName("com.mysql.cj.jdbc.Driver");
+        Connection con = DriverManager.getConnection(this.url, this.userdb, this.psw);
+        String query = "select count(survey_table.id) " +
+                "from survey_table " +
+                "right join category on category.id = survey_table.id_category " +
+                "where survey_table.id not in (" +
+                "SELECT survey_table.id " +
+                "FROM submitted_survey " +
+                "left join survey_table on submitted_survey.id_survey = survey_table.id " +
+                "where submitted_survey.id_mail = ?) ";
+        PreparedStatement stm = con.prepareStatement(query);
+        stm.setString(1, user);
+        ResultSet rs = stm.executeQuery();
+
+        int count = 0;
+        while (rs.next()) {
+            count = rs.getInt(1);
+        }
+        con.close();
+        stm.close();
+        return count;
     }
 }
