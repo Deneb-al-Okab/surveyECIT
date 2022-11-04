@@ -189,4 +189,19 @@ public class Read {
         stm.close();
         return count;
     }
+
+    public ArrayList<String> readCategory() throws ClassNotFoundException, SQLException {
+        ArrayList<String> l = new ArrayList<>();
+        Class.forName("com.mysql.cj.jdbc.Driver");
+        Connection con = DriverManager.getConnection(this.url, this.userdb, this.psw);
+        String query = "select category.name from category";
+        Statement stm = con.createStatement();
+        ResultSet rs = stm.executeQuery(query);
+        while(rs.next()){
+            System.out.println(rs.getString(1));
+            l.add(rs.getString(1));
+        }
+        System.out.println(l);
+        return l;
+    }
 }
