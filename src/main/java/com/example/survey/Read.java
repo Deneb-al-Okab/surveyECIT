@@ -26,7 +26,7 @@ public class Read {
         }
         stmtC.close();
         //PRENDO TUTTE LE DOMANDE E RISPOSTE
-        PreparedStatement stmt = con.prepareStatement("select question.question, answer.answer, question.id " +
+        PreparedStatement stmt = con.prepareStatement("select question.question, answer.answer, question.id, question_answer.id as id_qa " +
                 "from  survey_table , survey_composition , question_answer " +
                 "inner JOIN answer ON question_answer.id_answer = answer.id " +
                 "inner join question on question_answer.id_question = question.id " +
@@ -36,10 +36,12 @@ public class Read {
                 "ORDER BY question.id asc; ");
         stmt.setInt(1,idSurvey);
         ResultSet rs = stmt.executeQuery();
-        ArrayList<String> tempAnswers = new ArrayList<>();
+        ArrayList<Answer> tempAnswers = new ArrayList<>();
         Question tempQuestion ;
+        Answer tempAnswer;
         String textQuestion = "";
-        String textAnswer;
+        String textAnswer ;
+        int idQa;
         int idQuestion = 0;
         int idNext = 0;
         int loop = 1;
@@ -49,6 +51,8 @@ public class Read {
              if(idNext != idQuestion && idQuestion != 0 || loop == count){
                  if(loop == count){
                      textAnswer = rs.getString("answer");
+                     idQa = rs.getInt("id_qa");
+                     tempAnswers = new
                      tempAnswers.add(textAnswer);
                  }
                  tempQuestion = new Question(idQuestion,textQuestion,tempAnswers);

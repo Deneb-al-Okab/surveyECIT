@@ -28,10 +28,7 @@ public class DoneSurveyTableServlet extends HttpServlet {
 
         PrintWriter out = response.getWriter();
         out.print(json);
-
-
-
-
+        
     }
 
     @Override

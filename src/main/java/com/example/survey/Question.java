@@ -4,13 +4,13 @@ import java.util.ArrayList;
 
 public class Question {
     private int id;
-    private String name;
+    private String text;
     private String category;
-    private ArrayList<String> answers = new ArrayList<>();
+    private ArrayList<Answer> answers = new ArrayList<>();
 
-    public Question(int id,String name, String category, ArrayList<String> answers) {
+    public Question(int id,String text, String category, ArrayList<Answer> answers) {
         this.id = id;
-        this.name = name;
+        this.text = text;
         this.category = category;
         this.answers = answers;
     }
@@ -18,9 +18,9 @@ public class Question {
     public Question() {
     }
 
-    public Question(int id, String name, ArrayList<String> answers) {
+    public Question(int id, String name, ArrayList<Answer> answers) {
         this.id = id;
-        this.name = name;
+        this.text = name;
         this.answers = answers;
     }
 /*    public void addAnswer(String answer){
