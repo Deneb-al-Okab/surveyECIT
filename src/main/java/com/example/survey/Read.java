@@ -55,15 +55,17 @@ public class Read {
                  if(loop == count){
                      textAnswer = rs.getString("answer");
                      idQa = rs.getInt("id_qa");
-                     tempAnswers = new
-                     tempAnswers.add(textAnswer);
+                     tempAnswer = new Answer(textAnswer,idQa);
+                     tempAnswers.add(tempAnswer);
                  }
                  tempQuestion = new Question(idQuestion,textQuestion,tempAnswers);
                  questions.add(tempQuestion);
                  tempAnswers = new ArrayList<>();
              }
             textAnswer = rs.getString("answer");
-            tempAnswers.add(textAnswer);
+            idQa = rs.getInt("id_qa");
+            tempAnswer = new Answer(textAnswer,idQa);
+            tempAnswers.add(tempAnswer);
             textQuestion = rs.getString("question");
             idQuestion = idNext;
             loop ++;
